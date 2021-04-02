@@ -1,0 +1,78 @@
+<?php
+
+class Product 
+{
+  private $price;
+  private $weight;
+  private $freeShipping = false;
+
+  public function __construct($price, $weight) {
+    $this->weight = $weight;
+    $this->price = $price;
+  }
+
+  function getWeight() {
+    return $this->weight;
+  }
+
+  function setFreeShipping() {
+    $this->freeShipping = true;
+  }
+
+  function getFreeShipping() {
+    return $this->freeShipping;
+  }
+}
+
+class Shipping {
+    private $totalShipping;
+    private $products;
+    private $pricePerKg;
+
+    public function __construct($pricePerKg) {
+      $this->pricePerKg = $pricePerKg;
+    }
+    
+    public function addProducts(Product $product){
+      $this->products[] = $product;
+    }
+
+    public function calcTotalShipping() {
+      foreach ($this->products as $product) {
+        if(!$product->getFreeShipping()) {
+          $this->totalShipping += $product->getWeight() * $this->pricePerKg;
+        }
+
+      }
+    }
+
+    public function getTotalShippingPrice() {
+      return $this->totalShipping;
+    }
+}
+
+
+// CONTROLLER
+
+$product = new Product(3,4);
+$product1 = new Product(2,4);
+$product2 = new Product(3,5);
+$product2->setFreeShipping();
+
+$pricePerKg = 5;
+
+$shipping = new Shipping($pricePerKg);
+
+$shipping->addProducts($product);
+$shipping->addProducts($product1);
+$shipping->addProducts($product2);
+$shipping->calcTotalShipping();
+$totalShippingPrice = $shipping->getTotalShippingPrice();
+
+
+echo '<pre>';
+var_dump($totalShippingPrice);
+echo '</pre>';
+// echo '<pre>';
+// var_dump($product->getWeight());
+// echo '</pre>';
